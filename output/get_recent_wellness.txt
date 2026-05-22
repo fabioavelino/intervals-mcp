@@ -1,0 +1,31 @@
+[2026-05-20]
+Fitness: CTL 59.2 ATL 71.5 RampRate +1.00
+Sleep: 7.5h Score 88/100 Quality 2/5 RHR 49bpm HRV 60ms
+
+[2026-05-19]
+Fitness: CTL 60.7 ATL 82.2 RampRate +4.76
+Sleep: 8.8h Score 88/100 Quality 2/5 RHR 46bpm HRV 66ms
+
+[2026-05-18]
+Fitness: CTL 58.7 ATL 72.7 RampRate +4.05
+Sleep: 8.8h Score 94/100 Quality 1/5 RHR 47bpm HRV 64ms
+
+[2026-05-17]
+Fitness: CTL 57.9 ATL 68.9 RampRate +1.98
+Sleep: 8.1h Score 93/100 Quality 1/5 RHR 47bpm HRV 65ms
+
+[2026-05-16]
+Fitness: CTL 55.9 ATL 58.0 RampRate +0.42
+Sleep: 6.5h Score 73/100 Quality 3/5 RHR 48bpm HRV 54ms
+
+[2026-05-15]
+Fitness: CTL 57.3 ATL 66.9 RampRate +0.43
+Sleep: 9.7h Score 89/100 Quality 2/5 RHR 45bpm HRV 72ms
+
+[2026-05-14]
+Fitness: CTL 56.9 ATL 63.7 RampRate +1.09
+Sleep: 5.8h Score 66/100 Quality 3/5 RHR 49bpm HRV 45ms
+
+[2026-05-13]
+Fitness: CTL 58.2 ATL 72.2 RampRate +1.11
+Sleep: 7.1h Score 65/100 Quality 3/5 RHR 51bpm HRV 55ms

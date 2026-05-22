@@ -1,0 +1,739 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "start_date_local": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "icu_ignore_time": {
+      "type": "boolean"
+    },
+    "icu_pm_cp": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_pm_w_prime": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_pm_p_max": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_pm_ftp": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_pm_ftp_secs": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_pm_ftp_watts": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_ignore_power": {
+      "type": "boolean"
+    },
+    "icu_rolling_cp": {
+      "type": "number",
+      "format": "float"
+    },
+    "icu_rolling_w_prime": {
+      "type": "number",
+      "format": "float"
+    },
+    "icu_rolling_p_max": {
+      "type": "number",
+      "format": "float"
+    },
+    "icu_rolling_ftp": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_rolling_ftp_delta": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_training_load": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_atl": {
+      "type": "number",
+      "format": "float"
+    },
+    "icu_ctl": {
+      "type": "number",
+      "format": "float"
+    },
+    "ss_p_max": {
+      "type": "number",
+      "format": "float"
+    },
+    "ss_w_prime": {
+      "type": "number",
+      "format": "float"
+    },
+    "ss_cp": {
+      "type": "number",
+      "format": "float"
+    },
+    "paired_event_id": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_ftp": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_joules": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_recording_time": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "elapsed_time": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_weighted_avg_watts": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "carbs_used": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "start_date": {
+      "type": "string"
+    },
+    "distance": {
+      "type": "number",
+      "format": "float"
+    },
+    "icu_distance": {
+      "type": "number",
+      "format": "float"
+    },
+    "moving_time": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "coasting_time": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "total_elevation_gain": {
+      "type": "number",
+      "format": "float"
+    },
+    "total_elevation_loss": {
+      "type": "number",
+      "format": "float"
+    },
+    "timezone": {
+      "type": "string"
+    },
+    "trainer": {
+      "type": "boolean"
+    },
+    "sub_type": {
+      "type": "string",
+      "enum": [
+        "NONE",
+        "COMMUTE",
+        "WARMUP",
+        "COOLDOWN",
+        "RACE"
+      ]
+    },
+    "commute": {
+      "type": "boolean"
+    },
+    "race": {
+      "type": "boolean"
+    },
+    "max_speed": {
+      "type": "number",
+      "format": "float"
+    },
+    "average_speed": {
+      "type": "number",
+      "format": "float"
+    },
+    "device_watts": {
+      "type": "boolean"
+    },
+    "has_heartrate": {
+      "type": "boolean"
+    },
+    "max_heartrate": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "average_heartrate": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "average_cadence": {
+      "type": "number",
+      "format": "float"
+    },
+    "calories": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "average_temp": {
+      "type": "number",
+      "format": "float"
+    },
+    "min_temp": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "max_temp": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "avg_lr_balance": {
+      "type": "number",
+      "format": "float"
+    },
+    "gap": {
+      "type": "number",
+      "format": "float"
+    },
+    "gap_model": {
+      "type": "string",
+      "enum": [
+        "NONE",
+        "STRAVA_RUN"
+      ]
+    },
+    "use_elevation_correction": {
+      "type": "boolean"
+    },
+    "gear": {
+      "$ref": "#/components/schemas/StravaGear"
+    },
+    "perceived_exertion": {
+      "type": "number",
+      "format": "float"
+    },
+    "device_name": {
+      "type": "string"
+    },
+    "power_meter": {
+      "type": "string"
+    },
+    "power_meter_serial": {
+      "type": "string"
+    },
+    "power_meter_battery": {
+      "type": "string"
+    },
+    "crank_length": {
+      "type": "number",
+      "format": "float"
+    },
+    "external_id": {
+      "type": "string"
+    },
+    "file_sport_index": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "file_type": {
+      "type": "string"
+    },
+    "icu_athlete_id": {
+      "type": "string"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "icu_sync_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "analyzed": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "icu_w_prime": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "p_max": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "threshold_pace": {
+      "type": "number",
+      "format": "float"
+    },
+    "icu_hr_zones": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "format": "int32"
+      }
+    },
+    "pace_zones": {
+      "type": "array",
+      "items": {
+        "type": "number",
+        "format": "float"
+      }
+    },
+    "lthr": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_resting_hr": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_weight": {
+      "type": "number",
+      "format": "float"
+    },
+    "icu_power_zones": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "format": "int32"
+      }
+    },
+    "icu_sweet_spot_min": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_sweet_spot_max": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_power_spike_threshold": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "trimp": {
+      "type": "number",
+      "format": "float"
+    },
+    "icu_warmup_time": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_cooldown_time": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_chat_id": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_ignore_hr": {
+      "type": "boolean"
+    },
+    "ignore_velocity": {
+      "type": "boolean"
+    },
+    "ignore_pace": {
+      "type": "boolean"
+    },
+    "ignore_parts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Ignore"
+      }
+    },
+    "icu_training_load_data": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "interval_summary": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "skyline_chart_bytes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "byte"
+      }
+    },
+    "stream_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "has_weather": {
+      "type": "boolean"
+    },
+    "has_segments": {
+      "type": "boolean"
+    },
+    "power_field_names": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "power_field": {
+      "type": "string"
+    },
+    "icu_zone_times": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/ZoneTime"
+      }
+    },
+    "icu_hr_zone_times": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "format": "int32"
+      }
+    },
+    "pace_zone_times": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "format": "int32"
+      }
+    },
+    "gap_zone_times": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "format": "int32"
+      }
+    },
+    "use_gap_zone_times": {
+      "type": "boolean"
+    },
+    "custom_zones": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/ZoneSet"
+      }
+    },
+    "tiz_order": {
+      "type": "string",
+      "enum": [
+        "POWER_HR_PACE",
+        "POWER_PACE_HR",
+        "HR_POWER_PACE",
+        "HR_PACE_POWER",
+        "PACE_POWER_HR",
+        "PACE_HR_POWER"
+      ]
+    },
+    "polarization_index": {
+      "type": "number",
+      "format": "float"
+    },
+    "icu_achievements": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/IcuAchievement"
+      }
+    },
+    "icu_intervals_edited": {
+      "type": "boolean"
+    },
+    "lock_intervals": {
+      "type": "boolean"
+    },
+    "icu_lap_count": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_joules_above_ftp": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_max_wbal_depletion": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_hrr": {
+      "$ref": "#/components/schemas/HRRecovery"
+    },
+    "icu_sync_error": {
+      "type": "string"
+    },
+    "icu_color": {
+      "type": "string"
+    },
+    "icu_power_hr_z2": {
+      "type": "number",
+      "format": "float"
+    },
+    "icu_power_hr_z2_mins": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_cadence_z2": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_rpe": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "feel": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "kg_lifted": {
+      "type": "number",
+      "format": "float"
+    },
+    "decoupling": {
+      "type": "number",
+      "format": "float"
+    },
+    "icu_median_time_delta": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "p30s_exponent": {
+      "type": "number",
+      "format": "float"
+    },
+    "workout_shift_secs": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "strava_id": {
+      "type": "string"
+    },
+    "lengths": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "pool_length": {
+      "type": "number",
+      "format": "float"
+    },
+    "compliance": {
+      "type": "number",
+      "format": "float"
+    },
+    "coach_tick": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "STRAVA",
+        "UPLOAD",
+        "MANUAL",
+        "GARMIN_CONNECT",
+        "OAUTH_CLIENT",
+        "DROPBOX",
+        "POLAR",
+        "SUUNTO",
+        "COROS",
+        "WAHOO",
+        "ZWIFT",
+        "ZEPP",
+        "CONCEPT2",
+        "HUAWEI"
+      ]
+    },
+    "oauth_client_id": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "oauth_client_name": {
+      "type": "string"
+    },
+    "average_altitude": {
+      "type": "number",
+      "format": "float"
+    },
+    "min_altitude": {
+      "type": "number",
+      "format": "float"
+    },
+    "max_altitude": {
+      "type": "number",
+      "format": "float"
+    },
+    "power_load": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "hr_load": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "pace_load": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "hr_load_type": {
+      "type": "string",
+      "enum": [
+        "AVG_HR",
+        "HR_ZONES",
+        "HRSS"
+      ]
+    },
+    "pace_load_type": {
+      "type": "string",
+      "enum": [
+        "SWIM",
+        "RUN"
+      ]
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Attachment"
+      }
+    },
+    "recording_stops": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "format": "int32"
+      }
+    },
+    "average_weather_temp": {
+      "type": "number",
+      "format": "float"
+    },
+    "min_weather_temp": {
+      "type": "number",
+      "format": "float"
+    },
+    "max_weather_temp": {
+      "type": "number",
+      "format": "float"
+    },
+    "average_feels_like": {
+      "type": "number",
+      "format": "float"
+    },
+    "min_feels_like": {
+      "type": "number",
+      "format": "float"
+    },
+    "max_feels_like": {
+      "type": "number",
+      "format": "float"
+    },
+    "average_wind_speed": {
+      "type": "number",
+      "format": "float"
+    },
+    "average_wind_gust": {
+      "type": "number",
+      "format": "float"
+    },
+    "prevailing_wind_deg": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "headwind_percent": {
+      "type": "number",
+      "format": "float"
+    },
+    "tailwind_percent": {
+      "type": "number",
+      "format": "float"
+    },
+    "average_clouds": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "max_rain": {
+      "type": "number",
+      "format": "float"
+    },
+    "max_snow": {
+      "type": "number",
+      "format": "float"
+    },
+    "carbs_ingested": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "route_id": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "pace": {
+      "type": "number",
+      "format": "float"
+    },
+    "athlete_max_hr": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "group": {
+      "type": "string"
+    },
+    "icu_intensity": {
+      "type": "number",
+      "format": "float"
+    },
+    "icu_efficiency_factor": {
+      "type": "number",
+      "format": "float"
+    },
+    "icu_power_hr": {
+      "type": "number",
+      "format": "float"
+    },
+    "session_rpe": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "average_stride": {
+      "type": "number",
+      "format": "float"
+    },
+    "icu_average_watts": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "icu_variability_index": {
+      "type": "number",
+      "format": "float"
+    },
+    "strain_score": {
+      "type": "number",
+      "format": "float"
+    }
+  }
+}

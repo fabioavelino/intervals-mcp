@@ -1,0 +1,138 @@
+Ride: Dardagny Cyclisme sur route, 2026-05-19 19:29
+
+── PERFORMANCE ───────────────────────────────────────────────────────────
+Duration:      1h01m06s (moving: 1h01m01s, coasting: 5m21s)
+Distance:      37.1 km
+Elevation:     +182m / -180m | Avg altitude: 458m (min 454m / max 463m)
+Avg speed:     36.5 km/h | Max: 51.0 km/h
+Avg cadence:   100 rpm
+Calories:      1027 kcal | Carbs used: 169g
+
+── POWER ─────────────────────────────────────────────────────────────────
+FTP (set):     270w | Rolling FTP: 263w (+3w delta)
+Avg watts:     256w | NP: 265w | VI: 1.04
+IF:            98% | EF: 1.53 | Power/HR: 1.48
+W':            23200 J | Max W' depletion: 23180 J
+Peak power:    806w
+Joules total:  938153 J | Above FTP: 117686 J
+kJ/h:          922.5
+Time above FTP: 31.5 min
+
+── HEART RATE ────────────────────────────────────────────────────────────
+Avg HR:        173 bpm | Max: 182 bpm | LTHR: 173 bpm
+Resting HR:    46 bpm | Max HR: 192 bpm
+TRIMP:         180.5 | Decoupling: 5.6%
+HRR (recovery): 176→155 bpm in 60s (-21 bpm)
+
+── TRAINING LOAD ─────────────────────────────────────────────────────────
+Power load:    98 | HR load: 102 (HRSS)
+Training load: 98 | Strain score: 208.8
+ATL:           82.2 | CTL: 60.7
+Intensity:     98%
+
+── POWER ZONES ───────────────────────────────────────────────────────────
+Thresholds: Z1<176w | Z2<224w | Z3<259w | Z4<284w | Z5<324w | Z6<405w | Z7≥405w
+Sweet spot: 227–262w
+
+Time in zone:
+  Z1: 9m52s | Z2: 4m31s | Z3: 9m42s | Z4: 12m21s
+  Z5: 15m40s | Z6: 6m56s | Z7: 1m59s | SS: 10m39s
+
+── HR ZONES ──────────────────────────────────────────────────────────────
+Thresholds (bpm): Z1<139 | Z2<155 | Z3<161 | Z4<172 | Z5<177 | Z6<182 | Z7≥182
+
+Time in zone:
+  Z1: 1m36s | Z2: 2m00s | Z3: 1m00s | Z4: 10m14s
+  Z5: 33m11s | Z6: 13m00s | Z7: 0m00s
+
+── INTERVALS (auto-detected groups) ──────────────────────────────────────
+10x 8s @ 471w avg | Z7 | HR 162 bpm | cad 104 rpm
+ 1x 18s @ 416w avg | Z7 | HR 165 bpm | cad 112 rpm
+ 3x 50s @ 293w avg | Z5 | HR 176 bpm | cad 105 rpm
+11x 28s @ 305w avg | Z5 | HR 175 bpm | cad 106 rpm
+ 8x 38s @ 305w avg | Z5 | HR 176 bpm | cad 106 rpm
+
+── ACHIEVEMENTS ──────────────────────────────────────────────────────────
+🏆 FTP UP:        267w over 35min (new best)
+⚡ Best Power 60min: 258w
+
+── LAPS ──────────────────────────────────────────────────────────────────
+ #  Type      Duration  Avg pwr  NP    Avg HR   Watts without coasting
+ 1  RECOVERY  1m44s     175w     192w  135 bpm  265w (1m09s)
+ 2  WORK      0m09s     421w     169w  139 bpm  421w (0m09s)
+ 3  RECOVERY  1m02s     212w     225w  143 bpm  362w (0m36s)
+ 4  WORK      0m08s     445w     389w  158 bpm  445w (0m08s)
+ 5  RECOVERY  0m16s     144w     298w  161 bpm  288w (0m08s)
+ 6  WORK      0m06s     548w     289w  158 bpm  548w (0m06s)
+ 7  RECOVERY  0m07s     243w     275w  162 bpm  422w (0m04s)
+ 8  WORK      0m09s     460w     296w  165 bpm  460w (0m09s)
+ 9  RECOVERY  0m44s     225w     313w  166 bpm  299w (0m33s)
+10  WORK      0m18s     416w     273w  165 bpm  416w (0m18s)
+11  RECOVERY  0m18s     157w     311w  168 bpm  314w (0m09s)
+12  WORK      0m11s     449w     262w  166 bpm  449w (0m11s)
+13  RECOVERY  0m30s     287w     332w  172 bpm  330w (0m26s)
+14  WORK      0m07s     411w     303w  172 bpm  411w (0m07s)
+15  RECOVERY  0m06s     185w     285w  173 bpm  185w (0m06s)
+16  WORK      0m48s     306w     297w  172 bpm  306w (0m48s)
+17  RECOVERY  0m09s     175w     279w  174 bpm  314w (0m05s)
+18  WORK      0m27s     320w     278w  174 bpm  320w (0m27s)
+19  RECOVERY  0m09s     161w     293w  175 bpm  289w (0m05s)
+20  WORK      0m37s     296w     278w  173 bpm  296w (0m37s)
+21  RECOVERY  2m00s     255w     267w  172 bpm  274w (1m52s)
+22  WORK      0m38s     303w     273w  168 bpm  303w (0m38s)
+23  RECOVERY  1m23s     273w     286w  173 bpm  284w (1m20s)
+24  WORK      0m28s     302w     268w  176 bpm  302w (0m28s)
+25  RECOVERY  0m18s     251w     275w  177 bpm  322w (0m14s)
+26  WORK      0m30s     288w     284w  176 bpm  288w (0m30s)
+27  RECOVERY  1m21s     274w     285w  177 bpm  274w (1m21s)
+28  WORK      0m30s     294w     269w  177 bpm  294w (0m30s)
+29  RECOVERY  3m05s     213w     234w  166 bpm  232w (2m49s)
+30  WORK      0m09s     476w     254w  157 bpm  476w (0m09s)
+31  RECOVERY  1m00s     248w     289w  169 bpm  281w (0m53s)
+32  WORK      0m30s     319w     283w  173 bpm  319w (0m30s)
+33  RECOVERY  0m08s     153w     286w  176 bpm  153w (0m08s)
+34  WORK      0m28s     316w     276w  176 bpm  316w (0m28s)
+35  RECOVERY  0m09s     152w     287w  177 bpm  273w (0m05s)
+36  WORK      0m39s     298w     278w  178 bpm  298w (0m39s)
+37  RECOVERY  0m08s     165w     265w  179 bpm  255w (0m05s)
+38  WORK      0m25s     316w     273w  177 bpm  316w (0m25s)
+39  RECOVERY  0m45s     239w     281w  179 bpm  268w (0m40s)
+40  WORK      0m27s     295w     239w  175 bpm  295w (0m27s)
+41  RECOVERY  1m07s     256w     268w  176 bpm  286w (1m00s)
+42  WORK      0m41s     304w     288w  178 bpm  304w (0m41s)
+43  RECOVERY  0m15s     141w     252w  179 bpm  208w (0m10s)
+44  WORK      0m28s     292w     241w  175 bpm  292w (0m28s)
+45  RECOVERY  9m13s     256w     258w  175 bpm  271w (8m41s)
+46  WORK      0m49s     287w     289w  178 bpm  287w (0m49s)
+47  RECOVERY  0m55s     240w     259w  177 bpm  259w (0m51s)
+48  WORK      0m39s     300w     266w  177 bpm  300w (0m39s)
+49  RECOVERY  1m22s     200w     246w  176 bpm  230w (1m11s)
+50  WORK      0m06s     514w     169w  167 bpm  514w (0m06s)
+51  RECOVERY  0m34s     111w     188w  168 bpm  251w (0m15s)
+52  WORK      0m10s     504w     183w  163 bpm  504w (0m10s)
+53  RECOVERY  0m33s     215w     311w  174 bpm  296w (0m24s)
+54  WORK      0m07s     479w     232w  173 bpm  479w (0m07s)
+55  RECOVERY  0m07s     245w     228w  175 bpm  341w (0m05s)
+56  WORK      0m34s     315w     311w  178 bpm  315w (0m34s)
+57  RECOVERY  13m38s    249w     255w  175 bpm  270w (12m31s)
+58  WORK      0m29s     322w     252w  173 bpm  322w (0m29s)
+59  RECOVERY  0m56s     251w     278w  176 bpm  286w (0m49s)
+60  WORK      0m54s     285w     267w  177 bpm  285w (0m54s)
+61  RECOVERY  0m58s     196w     232w  175 bpm  218w (0m52s)
+62  WORK      0m36s     319w     271w  174 bpm  319w (0m36s)
+63  RECOVERY  0m09s     147w     280w  178 bpm  264w (0m05s)
+64  WORK      0m36s     301w     275w  178 bpm  301w (0m36s)
+65  RECOVERY  0m35s     190w     248w  177 bpm  222w (0m30s)
+66  WORK      0m29s     289w     237w  174 bpm  289w (0m29s)
+67  RECOVERY  0m58s     189w     253w  175 bpm  275w (0m40s)
+
+── WEATHER ───────────────────────────────────────────────────────────────
+Temp: 16.7°C (feels like 14.9°C) | Range: 15.8–17.3°C
+Wind: 2.0 m/s avg, gusts 4.4 m/s | Direction: SW (225°)
+Headwind: 33% | Tailwind: 32% | Cloud cover: 93%
+Rain: 0 | Snow: 0
+
+── ATHLETE PROFILE (at time of activity) ─────────────────────────────────
+Weight: 66 kg | FTP: 270w (4.09 w/kg)
+LTHR: 173 bpm | RHR: 46 bpm
+VO2Max (Garmin): 64.3 ml/kg/min
