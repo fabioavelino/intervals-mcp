@@ -56,6 +56,15 @@ class IntervalsClient {
         return this.fetchApi(`/activity/${activityId}`, params);
     }
     /**
+     * Fetches the 1 second resolution streams of an activity
+     * (time, watts, heartrate, cadence, distance, altitude, ...)
+     */
+    async getActivityStreams(activityId, streams) {
+        return this.fetchApi(`/activity/${activityId}/streams`, {
+            streams: streams.join(",")
+        });
+    }
+    /**
      * Fetches recent wellness data (sleep, HRV, resting HR, etc.)
      * By default, fetches data from the last 7 days.
      */

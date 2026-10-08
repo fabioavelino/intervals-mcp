@@ -1,0 +1,1 @@
+{"$schema":"https://agent-plugins.org/schemas/1.0.0/mcp.schema.json","mcpServers":{"intervals":{"args":["${PLUGIN_ROOT}/dist/index.js"],"command":"node","cwd":"${PLUGIN_ROOT}","type":"stdio"}}}

@@ -1,0 +1,1 @@
+{"$schema":"https://agent-plugins.org/schemas/1.0.0/plugin.schema.json","author":{"name":""},"description":"Read-only Intervals.icu training data: recent rides, activity details, minute-by-minute WORK intervals, wellness and sleep.","homepage":"","license":"ISC","name":"intervals-icu","version":"1.0.1"}

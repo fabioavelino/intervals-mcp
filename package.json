@@ -5,7 +5,9 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts",
+    "build:plugin": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=cjs --outfile=intervals-icu/dist/index.js --log-level=warning",
+    "package:plugin": "npm run build:plugin && rm -f intervals-icu-plugin.zip && zip -r intervals-icu-plugin.zip intervals-icu -x '*.DS_Store'"
   },
   "keywords": [],
   "author": "",

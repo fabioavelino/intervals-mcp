@@ -389,6 +389,389 @@ function formatActivityDetails(activity) {
         `VO2Max (Garmin): ${formatNumber(formattedActivity.VO2MaxGarmin, 1)} ml/kg/min`,
     ].join("\n");
 }
+const MINUTE_STREAMS = ["watts", "heartrate", "cadence", "distance", "altitude"];
+const NORMALIZED_POWER_WINDOW = 30;
+const ELEVATION_NOISE_THRESHOLD = 1;
+const CROSS_BUCKET_GAP_LIMIT = 3;
+const WORK_INTERVAL_TYPE = "WORK";
+const MISSING = "-";
+function formatMinuteClock(totalSeconds) {
+    const seconds = typeof totalSeconds === "number" && Number.isFinite(totalSeconds)
+        ? Math.max(0, Math.round(totalSeconds))
+        : 0;
+    return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+}
+function toStreamMap(streams) {
+    const map = new Map();
+    if (Array.isArray(streams)) {
+        for (const stream of streams) {
+            if (!stream || typeof stream !== "object") {
+                continue;
+            }
+            const key = typeof stream.name === "string" ? stream.name : stream.type;
+            if (typeof key === "string" && Array.isArray(stream.data)) {
+                map.set(key, stream.data);
+            }
+        }
+    }
+    return map;
+}
+function rollingAverage(values, window) {
+    const result = new Array(values.length);
+    const sample = (index) => (typeof values[index] === "number" && Number.isFinite(values[index]) ? values[index] : 0);
+    let sum = 0;
+    for (let index = 0; index < values.length; index++) {
+        sum += sample(index);
+        if (index >= window) {
+            sum -= sample(index - window);
+        }
+        result[index] = sum / Math.min(index + 1, window);
+    }
+    return result;
+}
+function mean(values) {
+    return values.length > 0 ? values.reduce((total, value) => total + value, 0) / values.length : null;
+}
+function buildPowerZoneThresholds(zones, ftp) {
+    if (!Array.isArray(zones) || typeof ftp !== "number" || !Number.isFinite(ftp) || ftp <= 0) {
+        return [];
+    }
+    return zones
+        .filter((zone) => typeof zone === "number" && Number.isFinite(zone) && zone < 999)
+        .map((zone) => (zone / 100) * ftp);
+}
+function powerZoneFor(watts, thresholds) {
+    for (let index = 0; index < thresholds.length; index++) {
+        if (watts < thresholds[index]) {
+            return index + 1;
+        }
+    }
+    return thresholds.length + 1;
+}
+function formatPowerZoneLegend(zones, ftp) {
+    const thresholds = buildPowerZoneThresholds(zones, ftp);
+    if (thresholds.length === 0) {
+        return "";
+    }
+    const parts = thresholds.map((threshold, index) => `Z${index + 1}<${Math.round(threshold)}w`);
+    parts.push(`Z${thresholds.length + 1}+`);
+    return `${parts.join(" | ")} (FTP ${formatRounded(ftp)}w)`;
+}
+function buildMinuteRows(streamMap, segments, thresholds, bucketSeconds) {
+    const time = streamMap.get("time") || [];
+    const watts = streamMap.get("watts");
+    const heartRate = streamMap.get("heartrate");
+    const cadence = streamMap.get("cadence");
+    const distance = streamMap.get("distance");
+    const altitude = streamMap.get("altitude");
+    const hasPower = Array.isArray(watts) && watts.length > 0;
+    const rolling = hasPower ? rollingAverage(watts, NORMALIZED_POWER_WINDOW) : [];
+    const buckets = new Map();
+    for (let index = 0; index < time.length; index++) {
+        const elapsed = typeof time[index] === "number" && Number.isFinite(time[index]) ? time[index] : index;
+        const key = Math.floor(elapsed / bucketSeconds);
+        const bucket = buckets.get(key);
+        if (bucket) {
+            bucket.push(index);
+        }
+        else {
+            buckets.set(key, [index]);
+        }
+    }
+    const rows = [];
+    const firstKey = Math.min(...buckets.keys());
+    const lastKey = Math.max(...buckets.keys());
+    for (let key = firstKey; key <= lastKey; key++) {
+        const indices = buckets.get(key);
+        const elapsed = key * bucketSeconds;
+        const activeSegment = segments.findIndex((segment) => elapsed >= segment.start && elapsed < segment.end);
+        if (segments.length > 0 && (activeSegment < 0 || !segments[activeSegment].work)) {
+            continue;
+        }
+        if (!indices) {
+            rows.push({
+                elapsed,
+                bucketSeconds,
+                stop: true,
+                segment: activeSegment >= 0 ? activeSegment + 1 : null,
+                zoneSeconds: [],
+                power: null,
+                normalized: null,
+                peak: null,
+                wattsMoving: null,
+                coastSecs: 0,
+                zone: null,
+                heartRate: null,
+                heartRateMax: null,
+                cadence: null,
+                speedKph: null,
+                distance: null,
+                elevation: null
+            });
+            continue;
+        }
+        const last = indices[indices.length - 1];
+        const previous = indices[0] - 1;
+        const start = previous >= 0 && (time[last] ?? 0) - (time[previous] ?? 0) <= CROSS_BUCKET_GAP_LIMIT
+            ? previous
+            : indices[0];
+        const slice = (values, keep) => {
+            if (!values) {
+                return [];
+            }
+            return indices.map((index) => values[index]).filter((value) => typeof value === "number" && Number.isFinite(value) && keep(value));
+        };
+        const powerValues = slice(watts, (value) => value >= 0);
+        const power = mean(powerValues);
+        const normalized = mean(indices
+            .filter((index) => typeof rolling[index] === "number")
+            .map((index) => Math.pow(rolling[index], 4)));
+        const coastIndices = indices.filter((index) => {
+            const w = watts?.[index];
+            const c = cadence?.[index];
+            return typeof w === "number" && w <= 5 && (typeof c !== "number" || c <= 5);
+        });
+        const coastSet = new Set(coastIndices);
+        const movingValues = indices
+            .filter((index) => !coastSet.has(index))
+            .map((index) => watts?.[index])
+            .filter((value) => typeof value === "number" && Number.isFinite(value));
+        const heartRateValues = slice(heartRate, (value) => value > 0);
+        const cadenceValues = slice(cadence, (value) => value > 0);
+        let distanceMeters = null;
+        let speedKph = null;
+        if (distance && distance.length > 0) {
+            let meters = 0;
+            let span = 0;
+            for (let index = start; index <= last; index++) {
+                const gap = (time[index] ?? 0) - (time[index - 1] ?? 0);
+                if (gap > 0 && typeof distance[index] === "number" && typeof distance[index - 1] === "number") {
+                    meters += distance[index] - distance[index - 1];
+                    span += Math.min(gap, bucketSeconds);
+                }
+            }
+            distanceMeters = meters;
+            speedKph = span > 0 ? (meters / span) * 3.6 : null;
+        }
+        let elevation = null;
+        if (altitude && altitude.length > 0) {
+            let gain = 0;
+            let loss = 0;
+            let pendingGain = 0;
+            let pendingLoss = 0;
+            for (let index = start + 1; index <= last; index++) {
+                const current = altitude[index];
+                const previousAltitude = altitude[index - 1];
+                if (typeof current !== "number" || typeof previousAltitude !== "number") {
+                    continue;
+                }
+                const delta = current - previousAltitude;
+                if (delta > 0) {
+                    pendingGain += delta;
+                    if (pendingGain >= ELEVATION_NOISE_THRESHOLD) {
+                        gain += pendingGain;
+                        pendingGain = 0;
+                    }
+                }
+                else if (delta < 0) {
+                    pendingLoss += -delta;
+                    if (pendingLoss >= ELEVATION_NOISE_THRESHOLD) {
+                        loss += pendingLoss;
+                        pendingLoss = 0;
+                    }
+                }
+            }
+            elevation = gain > 0 || loss > 0
+                ? `${gain > 0 ? `+${Math.round(gain)}` : ""}${gain > 0 && loss > 0 ? "/" : ""}${loss > 0 ? `-${Math.round(loss)}` : ""}`
+                : "0";
+        }
+        const movingPower = mean(movingValues);
+        const zone = power !== null && power > 5 && thresholds.length > 0 ? powerZoneFor(power, thresholds) : null;
+        const zoneSeconds = [];
+        if (hasPower && thresholds.length > 0) {
+            for (const index of indices) {
+                const value = watts?.[index];
+                const sampleTime = time[index] ?? index;
+                if (typeof value !== "number" || value <= 0) {
+                    continue;
+                }
+                if (activeSegment >= 0 && (sampleTime < segments[activeSegment].start || sampleTime >= segments[activeSegment].end)) {
+                    continue;
+                }
+                const sampleZone = powerZoneFor(value, thresholds) - 1;
+                zoneSeconds[sampleZone] = (zoneSeconds[sampleZone] || 0) + 1;
+            }
+        }
+        rows.push({
+            elapsed,
+            bucketSeconds,
+            stop: false,
+            segment: activeSegment >= 0 ? activeSegment + 1 : null,
+            zoneSeconds,
+            power,
+            normalized: normalized === null ? null : Math.round(Math.pow(normalized, 0.25)),
+            peak: powerValues.length > 0 ? Math.max(...powerValues) : null,
+            wattsMoving: movingPower,
+            coastSecs: coastIndices.length,
+            zone,
+            heartRate: mean(heartRateValues),
+            heartRateMax: heartRateValues.length > 0 ? Math.max(...heartRateValues) : null,
+            cadence: mean(cadenceValues),
+            speedKph,
+            distance: distanceMeters,
+            elevation
+        });
+    }
+    return rows;
+}
+const MINUTE_COLUMNS = [
+    { key: "T", legend: "T=elapsed start (m:ss)", get: (row) => (row.stop ? `${formatMinuteClock(row.elapsed)}-${formatMinuteClock(row.elapsed + row.bucketSeconds)}` : formatMinuteClock(row.elapsed)) },
+    { key: "Pwr", legend: "Pwr/NP/Max/WoC in W", get: (row) => formatRounded(row.power) },
+    { key: "NP", legend: "", get: (row) => formatRounded(row.normalized) },
+    { key: "Max", legend: "", get: (row) => formatRounded(row.peak) },
+    { key: "WoC", legend: "", get: (row) => formatRounded(row.wattsMoving) },
+    { key: "Cst", legend: "Cst=coasting s", get: (row) => (row.coastSecs > 0 ? `${row.coastSecs}s` : MISSING) },
+    { key: "Z", legend: "Z=power zone", get: (row) => (row.zone === null ? MISSING : `Z${row.zone}`) },
+    { key: "HR", legend: "HR/HRx bpm", get: (row) => formatRounded(row.heartRate) },
+    { key: "HRx", legend: "", get: (row) => formatRounded(row.heartRateMax) },
+    { key: "Cad", legend: "Cad rpm", get: (row) => formatRounded(row.cadence) },
+    { key: "km/h", legend: "km/h", get: (row) => formatNumber(row.speedKph, 1) },
+    { key: "Dist", legend: "Dist m", get: (row) => formatRounded(row.distance) },
+    { key: "E", legend: "E=elev +gain/-loss m", get: (row) => row.elevation ?? MISSING }
+];
+function getVisibleMinuteColumns(rows) {
+    return MINUTE_COLUMNS.filter((column) => rows.some((row) => column.get(row) !== MISSING));
+}
+function formatMinuteLegend(columns) {
+    return columns.map((column) => column.legend).filter((legend) => legend.length > 0).join(" | ");
+}
+function formatMinuteRows(rows, columns) {
+    return [
+        columns.map((column) => column.key).join(" "),
+        ...rows.map((row) => columns.map((column) => column.get(row)).join(" "))
+    ];
+}
+function labeled(label, value) {
+    return `${label}:`.padEnd(12, " ") + value;
+}
+function summarizeZoneSeconds(rows) {
+    const totals = [];
+    for (const row of rows) {
+        row.zoneSeconds.forEach((seconds, index) => {
+            totals[index] = (totals[index] || 0) + seconds;
+        });
+    }
+    return totals
+        .map((seconds, index) => ({ zone: index + 1, seconds: seconds || 0 }))
+        .filter((entry) => entry.seconds > 0)
+        .map((entry) => `Z${entry.zone} ${formatShortDuration(entry.seconds)}`)
+        .join(" | ");
+}
+function formatWorkIntervalSummary(interval, rows) {
+    if (!interval) {
+        return [];
+    }
+    const averageWatts = interval.average_watts;
+    const variability = typeof averageWatts === "number" && averageWatts > 0 && typeof interval.weighted_average_watts === "number"
+        ? formatNumber(interval.weighted_average_watts / averageWatts, 2)
+        : null;
+    const coastSecs = rows.reduce((total, row) => total + row.coastSecs, 0);
+    const zoneTimes = summarizeZoneSeconds(rows);
+    const wbal = typeof interval.wbal_start === "number" && typeof interval.wbal_end === "number"
+        ? `${Math.round(interval.wbal_start)}>${Math.round(interval.wbal_end)}`
+        : null;
+    return [
+        labeled("Duration", [
+            formatShortDuration(interval.elapsed_time),
+            `${formatKilometers(interval.distance)} km`,
+            `+${formatRounded(interval.total_elevation_gain)}m`,
+            `${formatKph(interval.average_speed)} km/h`
+        ].join(" | ")),
+        labeled("Power", [
+            `${formatRounded(averageWatts)}w avg`,
+            `${formatRounded(interval?.weighted_average_watts)}w NP`,
+            variability && `VI ${variability}`,
+            `${formatRounded(interval?.max_watts)}w peak`,
+            interval?.Wattscleaned ? `w/o coast ${interval.Wattscleaned}` : null,
+            coastSecs > 0 ? `${coastSecs}s coast` : null,
+            wbal && `W' ${wbal}`
+        ].filter((part) => typeof part === "string" && part.length > 0).join(" | ")),
+        ...(zoneTimes ? [labeled("Zones", zoneTimes)] : []),
+        labeled("Heart rate", [
+            `${formatRounded(interval.average_heartrate)} bpm avg`,
+            typeof interval.max_heartrate === "number" ? `max ${formatRounded(interval.max_heartrate)}` : null,
+            `${formatRounded(interval.average_cadence)} rpm`
+        ].filter((part) => typeof part === "string" && part.length > 0).join(" | "))
+    ];
+}
+function formatActivityMinutes(activity, streams, bucketMinutes) {
+    const streamMap = toStreamMap(streams);
+    const bucketSeconds = Math.max(1, Math.round(bucketMinutes)) * 60;
+    const intervals = Array.isArray(activity.icu_intervals) ? activity.icu_intervals : [];
+    const thresholds = buildPowerZoneThresholds(activity.icu_power_zones, activity.icu_ftp);
+    const segments = intervals
+        .map((interval) => ({
+        start: interval.start_time,
+        end: interval.end_time,
+        work: String(interval.type || "").toUpperCase() === WORK_INTERVAL_TYPE
+    }))
+        .filter((segment) => typeof segment.start === "number" && typeof segment.end === "number");
+    const minuteRows = buildMinuteRows(streamMap, segments, thresholds, bucketSeconds);
+    if (minuteRows.length === 0) {
+        const detectedTypes = [...new Set(intervals.map((interval) => String(interval.type || MISSING).toUpperCase()))];
+        return [
+            `${activity.type || "Activity"}: ${activity.name || "-"}, ${formatDateMinute(activity.start_date_local)} | ${formatDuration(activity.icu_recording_time)} recorded`,
+            "",
+            section(`${WORK_INTERVAL_TYPE} INTERVALS`),
+            (streamMap.get("time") || []).length > 0
+                ? `No minutes inside ${WORK_INTERVAL_TYPE} intervals (detected types: ${detectedTypes.join(", ") || "none"}).`
+                : "No stream data available for this activity."
+        ].join("\n");
+    }
+    const groups = new Map();
+    for (const row of minuteRows) {
+        const group = groups.get(row.segment);
+        if (group) {
+            group.push(row);
+        }
+        else {
+            groups.set(row.segment, [row]);
+        }
+    }
+    const columns = getVisibleMinuteColumns(minuteRows);
+    const zoneLegend = minuteRows.some((row) => row.zone !== null)
+        ? formatPowerZoneLegend(activity.icu_power_zones, activity.icu_ftp)
+        : "";
+    const workDuration = formatDuration(segments.filter((segment) => segment.work).reduce((total, segment) => total + (segment.end - segment.start), 0));
+    const bucketLabel = bucketSeconds === 60 ? "minute by minute" : `${bucketMinutes} min buckets`;
+    const lines = [
+        [
+            `${activity.type || "Activity"}: ${activity.name || "-"}, ${formatDateMinute(activity.start_date_local)}`,
+            `${formatDuration(activity.icu_recording_time)} recorded`,
+            `${workDuration} in ${groups.size} ${WORK_INTERVAL_TYPE} interval${groups.size > 1 ? "s" : ""}`,
+            bucketLabel
+        ].filter((part) => part).join(" | "),
+        ...(zoneLegend ? [`Zones: ${zoneLegend}`] : []),
+        "",
+        formatMinuteLegend(columns),
+        ""
+    ];
+    let first = true;
+    for (const [segmentNumber, rows] of groups) {
+        const interval = segmentNumber === null ? null : intervals[segmentNumber - 1];
+        const title = segmentNumber === null
+            ? `MINUTES OUTSIDE ANY INTERVAL ${formatMinuteClock(rows[0].elapsed)}-${formatMinuteClock(rows[rows.length - 1].elapsed)}`
+            : `INTERVAL ${segmentNumber} ${WORK_INTERVAL_TYPE} ${formatMinuteClock(interval.start_time)}-${formatMinuteClock(interval.end_time)}`;
+        if (!first) {
+            lines.push("");
+        }
+        first = false;
+        lines.push(section(title));
+        lines.push(...formatWorkIntervalSummary(interval, rows));
+        lines.push(...formatMinuteRows(rows, columns));
+    }
+    return lines.join("\n");
+}
 function createServer() {
     const server = new mcp_js_1.McpServer({
         name: "intervals-icu-mcp",
@@ -477,6 +860,24 @@ function createServer() {
             };
         }
     });
+    server.registerResource("Activity Minutes", new mcp_js_1.ResourceTemplate("intervals://activities/{activityId}/minutes", { list: undefined }), {
+        description: "Fetch the minute by minute breakdown of an activity plus its detected intervals",
+        mimeType: "text/plain",
+    }, async (uri, { activityId }) => {
+        const [activity, streams] = await Promise.all([
+            client.getActivity(String(activityId), true),
+            client.getActivityStreams(String(activityId), MINUTE_STREAMS)
+        ]);
+        return {
+            contents: [
+                {
+                    uri: uri.href,
+                    mimeType: "text/plain",
+                    text: formatActivityMinutes(activity, streams, 1),
+                },
+            ],
+        };
+    });
     server.registerTool("get_recent_wellness", {
         description: "Fetch recent wellness data including sleep score, heart rate, and HRV. Default is last 7 days.",
         inputSchema: {
@@ -493,6 +894,29 @@ function createServer() {
             return {
                 isError: true,
                 content: [{ type: "text", text: `Error fetching wellness data: ${error.message}` }]
+            };
+        }
+    });
+    server.registerTool("get_activity_minutes", {
+        description: "Fetch the WORK intervals of an activity (intervals=true), group their 1s streams per interval and return, for each one, a summary (duration, distance, elevation, speed, average/NP/VI/peak power, watts without coasting, time in power zone, HR, cadence, W' balance) followed by its minute by minute rows (power, NP, peak, watts without coasting, coasting, zone, HR, cadence, speed, distance, elevation).",
+        inputSchema: {
+            activityId: zod_1.z.string().describe("The ID of the activity to fetch"),
+            bucketMinutes: zod_1.z.number().optional().describe("Aggregate the table into buckets of N minutes instead of 1. Defaults to 1.")
+        }
+    }, async ({ activityId, bucketMinutes }) => {
+        try {
+            const [activity, streams] = await Promise.all([
+                client.getActivity(activityId, true),
+                client.getActivityStreams(activityId, MINUTE_STREAMS)
+            ]);
+            return {
+                content: [{ type: "text", text: formatActivityMinutes(activity, streams, bucketMinutes ?? 1) }]
+            };
+        }
+        catch (error) {
+            return {
+                isError: true,
+                content: [{ type: "text", text: `Error fetching activity minutes: ${error.message}` }]
             };
         }
     });
